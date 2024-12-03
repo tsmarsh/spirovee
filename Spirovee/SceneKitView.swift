@@ -24,15 +24,8 @@ struct SceneKitView: UIViewRepresentable {
         sceneView.scene = scene
         
         // Add spirograph geometry using SpirographCalculator
-//        let spirographNode = createSpirographNode(R: R, r: r, d: d)
-//        scene.rootNode.addChildNode(spirographNode)
-        
-        let cubeGeometry = SCNBox(width: 10, height: 10, length: 10, chamferRadius: 0)
-        cubeGeometry.firstMaterial?.diffuse.contents = UIColor.blue
-        
-        let cubeNode = SCNNode(geometry: cubeGeometry)
-        cubeNode.position = SCNVector3(0, 0, 0) // Centered at the origin
-        scene.rootNode.addChildNode(cubeNode)
+        let spirographNode = createSpirographNode(R: R, r: r, d: d)
+        scene.rootNode.addChildNode(spirographNode)
         
         // Add lighting
         let lightNode = SCNNode()
@@ -51,30 +44,26 @@ struct SceneKitView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {}
-    
+
     func createSpirographNode(R: Int, r: Int, d: Int) -> SCNNode {
         // Use SpirographCalculator to compute points
         let points = SpirographCalculator.calculatePoints(R: R, r: r, d: d)
         
-        print("Generated Points: \(points.count)")
+        print("Generated Points: \(points.count)") // Debugging
         
-        // Create a geometry source from the points
-        let vertices = points.map { SCNVector3($0.x, $0.y, 0) }
-        let vertexSource = SCNGeometrySource(vertices: vertices)
+        // Create a parent node to hold all spheres
+        let spirographNode = SCNNode()
         
-        // Create a line from the points
-        var indices: [Int32] = []
-        for i in 0..<vertices.count - 1 {
-            indices.append(Int32(i))
-            indices.append(Int32(i + 1))
+        // Add a small sphere at each point
+        for point in points {
+            let sphereGeometry = SCNSphere(radius: 0.5) // Small sphere
+            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red // Make them visible
+            
+            let sphereNode = SCNNode(geometry: sphereGeometry)
+            sphereNode.position = SCNVector3(point.x, point.y, 0) // Place sphere at calculated point
+            spirographNode.addChildNode(sphereNode)
         }
         
-        let indexData = Data(bytes: indices, count: indices.count * MemoryLayout<Int32>.size)
-        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: indices.count / 2, bytesPerIndex: MemoryLayout<Int32>.size)
-        
-        let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
-        geometry.firstMaterial?.diffuse.contents = UIColor.red
-        
-        return SCNNode(geometry: geometry)
+        return spirographNode
     }
 }
