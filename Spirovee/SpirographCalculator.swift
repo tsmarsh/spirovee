@@ -13,19 +13,18 @@ struct SpirographPoint {
 }
 
 class SpirographCalculator {
-    static func calculatePoints(R: Int, r: Int, d: Int, stepSize: Double = 0.01) -> [SpirographPoint] {
+    static func calculatePoints(R: Int, r: Int, d: Int) -> [SpirographPoint] {
+        let num_points = 5000
+        
         guard R > 0 && r > 0 && R != r else {
             fatalError("R and r must be positive and not equal.")
-        }
-        guard stepSize > 0 else {
-            fatalError("Step size must be positive.")
         }
         
         var points: [SpirographPoint] = []
         
         let lcmValue = lcm(R, r)
         let thetaMax = 2.0 * .pi * (Double(lcmValue) / Double(r))
-        
+        let stepSize = thetaMax / Double(num_points)
         
         for t in stride(from: 0.0, through: thetaMax, by: stepSize) {
             let rr: Double = Double(R-r)

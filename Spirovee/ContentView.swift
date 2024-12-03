@@ -16,7 +16,7 @@ struct ContentView: View {
         VStack {
             // Spirograph View scales with window size
             GeometryReader { geometry in
-                SceneKitView(R: Int(R), r: Int(r), d: Int(d))
+                SceneKitView(R: $R, r: $r, d: $d)
                     .aspectRatio(1, contentMode: .fit) // Maintain square aspect ratio
                     .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.95, alignment: .center)
                     .border(Color.gray, width: 1)
