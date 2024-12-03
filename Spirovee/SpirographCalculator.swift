@@ -17,7 +17,9 @@ class SpirographCalculator {
         var points: [SpirographPoint] = []
         
         // Calculate points for one complete cycle
-        let cycle = 2 * Double.pi * Double(lcm(Int(R), Int(r)))/R
+        // Calculate the period for one complete cycle
+        let k = (R-r)/r
+        let cycle = 2 * Double.pi * abs(k)
         
         for t in stride(from: 0, through: cycle, by: stepSize) {
             let x = (R-r) * cos(t) + d * cos((R-r)/r * t)

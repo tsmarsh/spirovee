@@ -75,9 +75,17 @@ final class SpirographCalculatorTests: XCTestCase {
         
         // Then
         // First and last points should be very close to each other
-        XCTAssertEqual(points.first?.x, points.last?.x, accuracy: 0.1,
+        guard let firstX = points.first?.x,
+              let firstY = points.first?.y,
+              let lastX = points.last?.x,
+              let lastY = points.last?.y else {
+            XCTFail("Points array should not be empty")
+            return
+        }
+        
+        XCTAssertEqual(firstX, lastX, accuracy: 0.1,
                       "First and last points should connect")
-        XCTAssertEqual(points.first?.y, points.last?.y, accuracy: 0.1,
+        XCTAssertEqual(firstY, lastY, accuracy: 0.1,
                       "First and last points should connect")
     }
 }
