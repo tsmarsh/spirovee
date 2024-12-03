@@ -17,7 +17,7 @@ class SpirographCalculator {
         var points: [SpirographPoint] = []
         
         // Calculate points for one complete cycle
-        let cycle = 2 * Double.pi * lcm(Int(R), Int(r))/R
+        let cycle = 2 * Double.pi * Double(lcm(Int(R), Int(r)))/R
         
         for t in stride(from: 0, through: cycle, by: stepSize) {
             let x = (R-r) * cos(t) + d * cos((R-r)/r * t)
@@ -44,4 +44,21 @@ class SpirographCalculator {
         }
         return abs(a)
     }
+}
+
+// Helper function to calculate Least Common Multiple
+func lcm(_ a: Int, _ b: Int) -> Int {
+    return abs(a * b) / gcd(a, b)
+}
+
+// Helper function to calculate Greatest Common Divisor
+func gcd(_ a: Int, _ b: Int) -> Int {
+    var a = a
+    var b = b
+    while b != 0 {
+        let temp = b
+        b = a % b
+        a = temp
+    }
+    return abs(a)
 }
