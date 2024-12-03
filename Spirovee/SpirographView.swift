@@ -7,9 +7,9 @@
 import SwiftUI
 
 struct SpirographView: View {
-    let R: Double
-    let r: Double
-    let d: Double
+    let R: Int
+    let r: Int
+    let d: Int
     
     var body: some View {
         Canvas { context, size in
@@ -17,42 +17,23 @@ struct SpirographView: View {
             var path = Path()
             var first = true
             
-            // Calculate points for one complete cycle
-            for t in stride(from: 0, through: 2 * Double.pi * Double(lcm(Int(R), Int(r))) / R, by: 0.01) {
-                let x = (R-r) * cos(t) + d * cos((R-r)/r * t)
-                let y = (R-r) * sin(t) - d * sin((R-r)/r * t)
-                
-                let point = CGPoint(
-                    x: center.x + x,
-                    y: center.y + y
+            let points = SpirographCalculator.calculatePoints(R: R, r: r, d: d)
+            
+            for point in points {
+                let canvasPoint = CGPoint(
+                    x: center.x + point.x,
+                    y: center.y + point.y
                 )
                 
                 if first {
-                    path.move(to: point)
+                    path.move(to: canvasPoint)
                     first = false
                 } else {
-                    path.addLine(to: point)
+                    path.addLine(to: canvasPoint)
                 }
             }
             
             context.stroke(path, with: .color(.blue), lineWidth: 2)
         }
     }
-}
-
-// Helper function to calculate Least Common Multiple
-func lcm(_ a: Int, _ b: Int) -> Int {
-    return abs(a * b) / gcd(a, b)
-}
-
-// Helper function to calculate Greatest Common Divisor
-func gcd(_ a: Int, _ b: Int) -> Int {
-    var a = a
-    var b = b
-    while b != 0 {
-        let temp = b
-        b = a % b
-        a = temp
-    }
-    return abs(a)
 }

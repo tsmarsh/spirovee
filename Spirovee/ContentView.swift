@@ -14,53 +14,21 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            SpirographView(R: R, r: r, d: d)
+            SpirographView(R: Int(R), r: Int(r), d: Int(d))
                 .frame(width: 300, height: 300)
                 .border(Color.gray, width: 1)
             
             VStack(alignment: .leading, spacing: 10) {
                 Text("Fixed Circle (R): \(Int(R))")
-                Slider(value: $R, in: 50...150)
+                Slider(value: $R, in: 50...150, step: 1)
                 
                 Text("Moving Circle (r): \(Int(r))")
-                Slider(value: $r, in: 10...80)
+                Slider(value: $r, in: 10...80, step: 1)
                 
                 Text("Distance (d): \(Int(d))")
-                Slider(value: $d, in: 10...100)
+                Slider(value: $d, in: 10...100, step: 1)
             }
             .padding()
-        }
-    }
-}
-
-struct SpirographView: View {
-    let R: Double
-    let r: Double
-    let d: Double
-    
-    var body: some View {
-        Canvas { context, size in
-            let center = CGPoint(x: size.width/2, y: size.height/2)
-            var path = Path()
-            var first = true
-            
-            let points = SpirographCalculator.calculatePoints(R: R, r: r, d: d)
-            
-            for point in points {
-                let canvasPoint = CGPoint(
-                    x: center.x + point.x,
-                    y: center.y + point.y
-                )
-                
-                if first {
-                    path.move(to: canvasPoint)
-                    first = false
-                } else {
-                    path.addLine(to: canvasPoint)
-                }
-            }
-            
-            context.stroke(path, with: .color(.blue), lineWidth: 2)
         }
     }
 }

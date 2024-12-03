@@ -13,54 +13,39 @@ struct SpirographPoint {
 }
 
 class SpirographCalculator {
-    static func calculatePoints(R: Double, r: Double, d: Double, stepSize: Double = 0.01) -> [SpirographPoint] {
+    static func calculatePoints(R: Int, r: Int, d: Int, stepSize: Double = 0.01) -> [SpirographPoint] {
+        guard R > 0 && r > 0 && R != r else {
+            fatalError("R and r must be positive and not equal.")
+        }
+        guard stepSize > 0 else {
+            fatalError("Step size must be positive.")
+        }
+        
         var points: [SpirographPoint] = []
         
-        // Calculate points for one complete cycle
-        // Calculate the period for one complete cycle
-        let k = (R-r)/r
-        let cycle = 2 * Double.pi * abs(k)
+        let lcmValue = lcm(R, r)
+        let thetaMax = 2.0 * .pi * (Double(lcmValue) / Double(r))
         
-        for t in stride(from: 0, through: cycle, by: stepSize) {
-            let x = (R-r) * cos(t) + d * cos((R-r)/r * t)
-            let y = (R-r) * sin(t) - d * sin((R-r)/r * t)
+        
+        for t in stride(from: 0.0, through: thetaMax, by: stepSize) {
+            let rr: Double = Double(R-r)
+            let dr: Double = Double(r)
+            let dd: Double = Double(d)
+            
+            let x = rr * cos(t) + dd * cos(rr/dr * t)
+            let y = rr * sin(t) - dd * sin(rr/dr * t)
             points.append(SpirographPoint(x: x, y: y))
         }
+        
         
         return points
     }
     
-    // Helper function to calculate Least Common Multiple
-    private static func lcm(_ a: Int, _ b: Int) -> Int {
-        return abs(a * b) / gcd(a, b)
-    }
-    
-    // Helper function to calculate Greatest Common Divisor
-    private static func gcd(_ a: Int, _ b: Int) -> Int {
-        var a = a
-        var b = b
-        while b != 0 {
-            let temp = b
-            b = a % b
-            a = temp
-        }
-        return abs(a)
-    }
 }
 
-// Helper function to calculate Least Common Multiple
 func lcm(_ a: Int, _ b: Int) -> Int {
-    return abs(a * b) / gcd(a, b)
+    return (a / gcd(a, b)) * b
 }
-
-// Helper function to calculate Greatest Common Divisor
 func gcd(_ a: Int, _ b: Int) -> Int {
-    var a = a
-    var b = b
-    while b != 0 {
-        let temp = b
-        b = a % b
-        a = temp
-    }
-    return abs(a)
+    return b == 0 ? a : gcd(b, a % b)
 }
