@@ -3,22 +3,22 @@ import SwiftUI
 
 struct CylinderPathModeler: PathModeler {
     
-    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator: Coordinator) {
+    func create(scene: SpiroveeScene, coordinator: Coordinator) {
         // Generate a spirograph path for initial creation
-        let points = generateDummyPath(pointCount: pointCount)
-        let geometry = createCylinderAlongPath(points: points, thickness: Float(thickness))
+        let points = generateDummyPath(pointCount: Int(scene.desiredPoints))
+        let geometry = createCylinderAlongPath(points: points, thickness: Float(scene.t))
         
         // Create a node with the generated geometry and add it to the parent
         let cylinderNode = SCNNode(geometry: geometry)
-        parentNode.addChildNode(cylinderNode)
+        coordinator.parentNode?.addChildNode(cylinderNode)
         coordinator.nodes = [cylinderNode] // Store the cylinder node in the coordinator
     }
     
-    func update(with points: [SpirographPoint], isDChanged: Bool,thickness: Double, coordinator: Coordinator) {
+    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
         guard let cylinderNode = coordinator.nodes.first else { return }
         
         // Update the geometry with new points
-        let geometry = createCylinderAlongPath(points: points, thickness: Float(thickness))
+        let geometry = createCylinderAlongPath(points: points, thickness: Float(scene.t))
         cylinderNode.geometry = geometry
     }
     

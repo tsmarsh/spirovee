@@ -13,10 +13,11 @@ struct SpiroveeScene: UIViewRepresentable {
     @Binding var r: Double
     @Binding var d: Double
     @Binding var t: Double
+    @Binding var z: Double
+    @Binding var desiredPoints: Double;
     
     var modeller: PathModeler = SpherePathModeler()
     
-    private let desiredPoints = 10000 // Number of spheres to use
 
     func makeCoordinator() -> Coordinator {
         return Coordinator()
@@ -41,28 +42,39 @@ struct SpiroveeScene: UIViewRepresentable {
         
         scene.rootNode.addChildNode(cameraNode)
         
+        context.coordinator.lastD = d
+        context.coordinator.lastThickness = t
+        context.coordinator.lastZ = z
+        context.coordinator.lastPoints = desiredPoints
+        
         // Create initial spheres
-        modeller.create(parentNode: scene.rootNode, pointCount: desiredPoints, thickness: t, coordinator: context.coordinator)
+        context.coordinator.parentNode = scene.rootNode
+        modeller.create(scene: self, coordinator: context.coordinator)
         return sceneView
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d), num_points: desiredPoints)
+        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d), num_points: Int(desiredPoints))
         
-        let isDChanged = context.coordinator.lastD != d
+        modeller.update(with: points, scene: self, coordinator: context.coordinator)
         
-        context.coordinator.lastD = d // Update the last value of d
-        
-        modeller.update(with: points, isDChanged: isDChanged, thickness: t, coordinator: context.coordinator)
+        context.coordinator.lastD = d
+        context.coordinator.lastThickness = t
+        context.coordinator.lastZ = z
+        context.coordinator.lastPoints = desiredPoints
     }
 }
 
 protocol PathModeler {
-    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator: Coordinator)
-    func update(with points: [SpirographPoint], isDChanged: Bool, thickness: Double, coordinator: Coordinator)
+    func create(scene: SpiroveeScene, coordinator: Coordinator)
+    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator)
 }
 
 class Coordinator {
+    var parentNode: SCNNode?
     var nodes: [SCNNode] = []
     var lastD: Double?
+    var lastThickness: Double?
+    var lastZ: Double?
+    var lastPoints: Double?
 }

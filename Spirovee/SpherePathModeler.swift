@@ -7,31 +7,51 @@
 import SceneKit
 
 struct SpherePathModeler: PathModeler {
-    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator : Coordinator) {
-        for _ in 0..<pointCount {
-            let sphereGeometry = SCNSphere(radius: thickness)
+    func create(scene: SpiroveeScene, coordinator : Coordinator) {
+        for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
+            let sphereGeometry = SCNSphere(radius: coordinator.lastThickness ?? 10.0)
             sphereGeometry.segmentCount = 8
             sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
-            sphereGeometry.firstMaterial?.emission.contents = UIColor.blue // Add emissive effect
+            sphereGeometry.firstMaterial?.emission.contents = UIColor.blue
 
             let sphereNode = SCNNode(geometry: sphereGeometry)
             sphereNode.position = SCNVector3(0, 0, 0)
             coordinator.nodes.append(sphereNode)
-            parentNode.addChildNode(sphereNode)
+            coordinator.parentNode?.addChildNode(sphereNode)
         }
     }
     
-    func update(with points: [SpirographPoint], isDChanged: Bool, thickness: Double, coordinator: Coordinator) {
-        guard points.count == coordinator.nodes.count else {
-            print("Mismatch: \(points.count) points, \(coordinator.nodes.count) spheres")
-            return
+    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
+
+        let currentNodeCount = coordinator.nodes.count
+        let targetNodeCount = points.count
+        
+        if currentNodeCount < targetNodeCount {
+            // Add more nodes
+            for _ in currentNodeCount..<targetNodeCount {
+                let sphereGeometry = SCNSphere(radius: 0.2)
+                sphereGeometry.segmentCount = 8
+                sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
+                sphereGeometry.firstMaterial?.emission.contents = UIColor.blue
+                
+                let newNode = SCNNode(geometry: sphereGeometry)
+                newNode.opacity = 0.0 // Start invisible
+                coordinator.nodes.append(newNode)
+                coordinator.parentNode?.addChildNode(newNode) // Ensure parentNode is set in Coordinator
+            }
+        } else if currentNodeCount > targetNodeCount {
+            // Remove excess nodes
+            let excessNodes = coordinator.nodes[targetNodeCount..<currentNodeCount]
+            for node in excessNodes {
+                node.removeFromParentNode() // Remove from scene graph
+            }
+            coordinator.nodes.removeLast(currentNodeCount - targetNodeCount)
         }
         
-        
-        if (isDChanged){
+        if (scene.d != coordinator.lastD){
             for (index, sphereNode) in coordinator.nodes.enumerated() {
                 if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                    sphereGeometry.radius = thickness
+                    sphereGeometry.radius = scene.t
                 }
                 
                 let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.2) // Move to final position
@@ -40,7 +60,7 @@ struct SpherePathModeler: PathModeler {
         } else {
             for (index, sphereNode) in coordinator.nodes.enumerated() {
                 if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                    sphereGeometry.radius = thickness
+                    sphereGeometry.radius = scene.t
                 }
                 
                 let reset = SCNAction.run { _ in
