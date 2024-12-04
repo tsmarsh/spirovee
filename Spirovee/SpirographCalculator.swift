@@ -14,7 +14,7 @@ struct SpirographPoint {
 }
 
 class SpirographCalculator {
-    static func calculatePoints(R: Int, r: Int, d: Int, num_points: Int = 5000) -> [SpirographPoint] {
+    static func calculatePoints(R: Int, r: Int, d: Int, zz: Int, num_points: Int = 5000) -> [SpirographPoint] {
         guard R > 0 && r > 0 else {
             fatalError("R and r must be positive")
         }
@@ -32,7 +32,7 @@ class SpirographCalculator {
             
             let x = rr * cos(t) + dd * cos(rr/dr * t)
             let y = rr * sin(t) - dd * sin(rr/dr * t)
-            let z = Double(r) * sin(t)
+            let z = Double(zz) * sin(t)
             points.append(SpirographPoint(x: x, y: y, z: z))
         }
         

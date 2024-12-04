@@ -48,7 +48,7 @@ struct SpherePathModeler: PathModeler {
             coordinator.nodes.removeLast(currentNodeCount - targetNodeCount)
         }
         
-        if (scene.d != coordinator.lastD){
+        if (scene.d != coordinator.lastD || scene.z != coordinator.lastZ || scene.t != coordinator.lastThickness){
             for (index, sphereNode) in coordinator.nodes.enumerated() {
                 if let sphereGeometry = sphereNode.geometry as? SCNSphere {
                     sphereGeometry.radius = scene.t
