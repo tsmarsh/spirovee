@@ -13,11 +13,9 @@ struct SpirographPoint {
 }
 
 class SpirographCalculator {
-    static func calculatePoints(R: Int, r: Int, d: Int) -> [SpirographPoint] {
-        let num_points = 5000
-        
+    static func calculatePoints(R: Int, r: Int, d: Int, num_points: Int = 5000) -> [SpirographPoint] {
         guard R > 0 && r > 0 else {
-            fatalError("R and r must be positive and not equal.")
+            fatalError("R and r must be positive")
         }
         
         var points: [SpirographPoint] = []

@@ -44,7 +44,7 @@ struct SceneKitView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d))
+        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d), num_points: desiredPoints)
         
         let isDChanged = context.coordinator.lastD != d
         
