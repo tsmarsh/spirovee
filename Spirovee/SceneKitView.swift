@@ -45,7 +45,12 @@ struct SceneKitView: UIViewRepresentable {
     
     func updateUIView(_ uiView: SCNView, context: Context) {
         let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d))
-        updateSpherePositions(with: points, context: context)
+        
+        let isDChanged = context.coordinator.lastD != d
+        
+        context.coordinator.lastD = d // Update the last value of d
+        
+        updateSpherePositions(with: points, isDChanged: isDChanged, context: context)
     }
     
     private func createInitialSpheres(parentNode: SCNNode, pointCount: Int, context: Context) {
@@ -62,24 +67,32 @@ struct SceneKitView: UIViewRepresentable {
         }
     }
     
-    private func updateSpherePositions(with points: [SpirographPoint], context: Context) {
+    private func updateSpherePositions(with points: [SpirographPoint], isDChanged: Bool, context: Context) {
         guard points.count == context.coordinator.sphereNodes.count else {
             print("Mismatch: \(points.count) points, \(context.coordinator.sphereNodes.count) spheres")
             return
         }
-    
         
-        for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
-            let moveToCenter = SCNAction.move(to: SCNVector3(0, 0, 0), duration: 0.1) // Move to center
-            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
-            
-            // Combine actions into a sequence
-            let sequence = SCNAction.sequence([moveToCenter, moveToFinal])
-            sphereNode.runAction(sequence)
+        if (isDChanged){
+            for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
+                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
+                sphereNode.runAction(moveToFinal)
+            }
+        } else {
+            for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
+                let moveToCenter = SCNAction.move(to: SCNVector3(0, 0, 0), duration: 0.1) // Move to center
+                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
+                
+                // Combine actions into a sequence
+                let sequence = SCNAction.sequence([moveToCenter, moveToFinal])
+                sphereNode.runAction(sequence)
+            }
         }
+
     }
 }
 
 class Coordinator {
     var sphereNodes: [SCNNode] = []
+    var lastD: Double?
 }
