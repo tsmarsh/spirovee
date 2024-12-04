@@ -10,6 +10,7 @@ import Foundation
 struct SpirographPoint {
     let x: Double
     let y: Double
+    let z: Double
 }
 
 class SpirographCalculator {
@@ -21,7 +22,7 @@ class SpirographCalculator {
         var points: [SpirographPoint] = []
         
         let lcmValue = lcm(R, r)
-        let thetaMax = 2.0 * .pi * (Double(lcmValue) / Double(r))
+        let thetaMax = 2.0 * .pi * (Double(lcmValue))
         let stepSize = thetaMax / Double(num_points)
         
         for t in stride(from: 0.0, through: thetaMax, by: stepSize) {
@@ -31,7 +32,8 @@ class SpirographCalculator {
             
             let x = rr * cos(t) + dd * cos(rr/dr * t)
             let y = rr * sin(t) - dd * sin(rr/dr * t)
-            points.append(SpirographPoint(x: x, y: y))
+            let z = Double(r) * sin(t)
+            points.append(SpirographPoint(x: x, y: y, z: z))
         }
         
         

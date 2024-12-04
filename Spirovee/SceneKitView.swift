@@ -88,17 +88,17 @@ struct SceneKitView: UIViewRepresentable {
                 let point = points[index]
 
                 // Animation sequence
-                let delay = Double(index) * (5.0 / Double(desiredPoints)) // Incremental delay for drawing effect
+                let delay = Double(index) * (2.0 / Double(desiredPoints)) // Incremental delay for drawing effect
 
                 let makeInvisible = SCNAction.fadeOut(duration: 0.05)
                 
-                let moveToFinal = SCNAction.move(to: SCNVector3(point.x, point.y, 0), duration: 0.0)
+                let moveToFinal = SCNAction.move(to: SCNVector3(point.x, point.y, point.z), duration: 0.0)
                 
                 let wait = SCNAction.wait(duration: delay)
                 
                 let fadeIn = SCNAction.fadeIn(duration: 0.5)
                 
-                let hold = SCNAction.wait(duration: 10.0)//Double(desiredPoints) * 0.01 * 3)
+                let hold = SCNAction.wait(duration: 5.0)//Double(desiredPoints) * 0.01 * 3)
                 
                 let sequence = SCNAction.sequence([makeInvisible, moveToFinal, wait, fadeIn, hold])
                 let loop = SCNAction.repeatForever(sequence)

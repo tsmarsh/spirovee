@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Spirovee
-//
-//  Created by Tom Marsh on 12/3/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -13,20 +6,38 @@ struct ContentView: View {
     @State private var d: Double = 5.0   // Distance from center
     
     var body: some View {
-        VStack {
-            // Spirograph View scales with window size
-            GeometryReader { geometry in
-                SceneKitView(R: $R, r: $r, d: $d)
-                    .aspectRatio(1, contentMode: .fit) // Maintain square aspect ratio
-                    .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height * 0.95, alignment: .center)
-                    .border(Color.gray, width: 1)
+        GeometryReader { geometry in
+            // Check aspect ratio to determine layout
+            if geometry.size.width > geometry.size.height {
+                // Landscape: Controls on the left
+                HStack {
+                    VStack(alignment: .leading) {
+                        ControlView(R: $R, r: $r, d: $d)
+                            .frame(maxWidth: geometry.size.width * 0.25) // Reserve 25% for controls
+                            .padding()
+                            .background(Color.gray.opacity(0.1))
+                        Spacer() // Push content to the top
+                    }
+                    
+                    SceneKitView(R: $R, r: $r, d: $d)
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .border(Color.gray, width: 1)
+                }
+            } else {
+                // Portrait: Controls at the bottom
+                VStack {
+                    SceneKitView(R: $R, r: $r, d: $d)
+                        .aspectRatio(1, contentMode: .fit)
+                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.8)
+                        .border(Color.gray, width: 1)
+                    
+                    ControlView(R: $R, r: $r, d: $d)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                }
             }
-            
-            // Sliders and labels remain static at the bottom
-            ControlView(R: $R,r: $r,d: $d)
-            
-            .padding()
-            .frame(maxWidth: .infinity)
         }
     }
 }
