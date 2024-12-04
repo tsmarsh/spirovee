@@ -67,14 +67,15 @@ struct SceneKitView: UIViewRepresentable {
             print("Mismatch: \(points.count) points, \(context.coordinator.sphereNodes.count) spheres")
             return
         }
+    
         
-        for (index, point) in points.enumerated() {
-            let sphereNode = context.coordinator.sphereNodes[index]
+        for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
+            let moveToCenter = SCNAction.move(to: SCNVector3(0, 0, 0), duration: 0.1) // Move to center
+            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
             
-            // Animate the position change for smooth movement
-            let newPosition = SCNVector3(point.x, point.y, 0)
-            let moveAction = SCNAction.move(to: newPosition, duration: 0.2)
-            sphereNode.runAction(moveAction)
+            // Combine actions into a sequence
+            let sequence = SCNAction.sequence([moveToCenter, moveToFinal])
+            sphereNode.runAction(sequence)
         }
     }
 }
