@@ -57,8 +57,8 @@ struct SceneKitView: UIViewRepresentable {
         for _ in 0..<pointCount {
             let sphereGeometry = SCNSphere(radius: 0.5)
             sphereGeometry.segmentCount = 8
-            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red
-            sphereGeometry.firstMaterial?.emission.contents = UIColor.red // Add emissive effect
+            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
+            sphereGeometry.firstMaterial?.emission.contents = UIColor.blue // Add emissive effect
 
             let sphereNode = SCNNode(geometry: sphereGeometry)
             sphereNode.position = SCNVector3(0, 0, 0)
@@ -80,12 +80,31 @@ struct SceneKitView: UIViewRepresentable {
             }
         } else {
             for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
-                let moveToCenter = SCNAction.move(to: SCNVector3(0, 0, 0), duration: 0.1) // Move to center
-                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
+                let reset = SCNAction.run { _ in
+                    sphereNode.position = SCNVector3(0, 0, 0)
+                    sphereNode.opacity = 0.0
+                }
                 
-                // Combine actions into a sequence
-                let sequence = SCNAction.sequence([moveToCenter, moveToFinal])
-                sphereNode.runAction(sequence)
+                let point = points[index]
+
+                // Animation sequence
+                let delay = Double(index) * 0.01 // Incremental delay for drawing effect
+
+                let makeInvisible = SCNAction.fadeOut(duration: 0.05)
+                
+                let moveToFinal = SCNAction.move(to: SCNVector3(point.x, point.y, 0), duration: 0.0)
+                
+                let wait = SCNAction.wait(duration: delay)
+                
+                let fadeIn = SCNAction.fadeIn(duration: 0.5)
+                
+                let hold = SCNAction.wait(duration: 10.0)//Double(desiredPoints) * 0.01 * 3)
+                
+                let sequence = SCNAction.sequence([makeInvisible, moveToFinal, wait, fadeIn])
+                let loop = SCNAction.repeatForever(sequence)
+                
+                // Run the animation
+                sphereNode.runAction(SCNAction.sequence([reset, sequence]))
             }
         }
 
