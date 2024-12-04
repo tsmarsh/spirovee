@@ -1,46 +1,74 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var R: Double = 30  // Fixed circle radius
-    @State private var r: Double = 10.0   // Moving circle radius
-    @State private var d: Double = 5.0   // Distance from center
+    @State private var R: Double = 30
+    @State private var r: Double = 10.0
+    @State private var d: Double = 5.0
     @State private var t: Double = 0.2
     @State private var z: Double = 10
     @State private var num_points: Double = 10000.0
-    
+
     var body: some View {
         GeometryReader { geometry in
-            // Check aspect ratio to determine layout
-            if geometry.size.width > geometry.size.height {
-                // Landscape: Controls on the left
-                HStack {
-                    VStack(alignment: .leading) {
-                        ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
-                            .frame(maxWidth: geometry.size.width * 0.25) // Reserve 25% for controls
-                            .padding()
-                            .background(Color.gray.opacity(0.1))
-                        Spacer() // Push content to the top
+            VStack(spacing: 16) {
+                // Header
+                Text("Spirovee")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.accentColor)
+                    .padding(.top, 16)
+
+                if geometry.size.width > geometry.size.height {
+                    // Landscape Layout
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Spirograph Settings")
+                                .font(.headline)
+                                .padding(.bottom, 8)
+
+                            ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
+                                .padding()
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(12)
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+
+                            Spacer()
+                        }
+                        .frame(maxWidth: geometry.size.width * 0.3)
+
+                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .border(Color.gray, width: 1)
+                            .background(Color(UIColor.systemBackground))
+                            .cornerRadius(12)
                     }
-                    
-                    SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .border(Color.gray, width: 1)
-                }
-            } else {
-                // Portrait: Controls at the bottom
-                VStack {
-                    SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
-                        .aspectRatio(1, contentMode: .fit)
-                        .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.8)
-                        .border(Color.gray, width: 1)
-                    
-                    ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.1))
+                } else {
+                    // Portrait Layout
+                    VStack(spacing: 16) {
+                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.7)
+                            .border(Color.gray, width: 1)
+                            .background(Color(UIColor.systemBackground))
+                            .cornerRadius(12)
+
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Spirograph Settings")
+                                .font(.headline)
+                                .padding(.bottom, 8)
+
+                            ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
+                                .padding()
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(12)
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        }
+                    }
                 }
             }
+            .padding(.horizontal, 16)
+            .background(Color(UIColor.systemGroupedBackground))
         }
     }
 }
