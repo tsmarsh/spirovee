@@ -11,13 +11,6 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 16) {
-                // Header
-                Text("Spirovee")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.accentColor)
-                    .padding(.top, 16)
-
                 if geometry.size.width > geometry.size.height {
                     // Landscape Layout
                     HStack(spacing: 16) {
@@ -36,21 +29,19 @@ struct ContentView: View {
                         }
                         .frame(maxWidth: geometry.size.width * 0.3)
 
-                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
+                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $r, desiredPoints: $num_points)
                             .aspectRatio(1, contentMode: .fit)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .border(Color.gray, width: 1)
-                            .background(Color(UIColor.systemBackground))
+                            .background(Color(UIColor.black))
                             .cornerRadius(12)
                     }
                 } else {
                     // Portrait Layout
                     VStack(spacing: 16) {
-                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
+                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $r, desiredPoints: $num_points)
                             .aspectRatio(1, contentMode: .fit)
                             .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.7)
-                            .border(Color.gray, width: 1)
-                            .background(Color(UIColor.systemBackground))
+                            .background(Color(UIColor.black))
                             .cornerRadius(12)
 
                         VStack(alignment: .leading, spacing: 16) {
@@ -68,7 +59,7 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .background(Color(UIColor.systemGroupedBackground))
+            .background(Color(UIColor.black))
         }
     }
 }
