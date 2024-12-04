@@ -7,17 +7,22 @@
 import SceneKit
 
 struct SpherePathModeler: PathModeler {
+    private func createSphere(coordinator : Coordinator) {
+        let sphereGeometry = SCNSphere(radius: coordinator.lastThickness ?? 0.2)
+        sphereGeometry.segmentCount = 8
+        sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
+        sphereGeometry.firstMaterial?.emission.contents = UIColor.blue
+
+        let sphereNode = SCNNode(geometry: sphereGeometry)
+        sphereNode.position = SCNVector3(0, 0, 0)
+        sphereNode.opacity = 0.4
+        coordinator.nodes.append(sphereNode)
+        coordinator.parentNode?.addChildNode(sphereNode)
+    }
+    
     func create(scene: SpiroveeScene, coordinator : Coordinator) {
         for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
-            let sphereGeometry = SCNSphere(radius: coordinator.lastThickness ?? 10.0)
-            sphereGeometry.segmentCount = 8
-            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
-            sphereGeometry.firstMaterial?.emission.contents = UIColor.blue
-
-            let sphereNode = SCNNode(geometry: sphereGeometry)
-            sphereNode.position = SCNVector3(0, 0, 0)
-            coordinator.nodes.append(sphereNode)
-            coordinator.parentNode?.addChildNode(sphereNode)
+            createSphere(coordinator: coordinator)
         }
     }
     
@@ -29,15 +34,7 @@ struct SpherePathModeler: PathModeler {
         if currentNodeCount < targetNodeCount {
             // Add more nodes
             for _ in currentNodeCount..<targetNodeCount {
-                let sphereGeometry = SCNSphere(radius: 0.2)
-                sphereGeometry.segmentCount = 8
-                sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
-                sphereGeometry.firstMaterial?.emission.contents = UIColor.blue
-                
-                let newNode = SCNNode(geometry: sphereGeometry)
-                newNode.opacity = 0.0 // Start invisible
-                coordinator.nodes.append(newNode)
-                coordinator.parentNode?.addChildNode(newNode) // Ensure parentNode is set in Coordinator
+                createSphere(coordinator: coordinator)
             }
         } else if currentNodeCount > targetNodeCount {
             // Remove excess nodes
@@ -79,7 +76,7 @@ struct SpherePathModeler: PathModeler {
                 
                 let wait = SCNAction.wait(duration: delay)
                 
-                let fadeIn = SCNAction.fadeIn(duration: 0.5)
+                let fadeIn = SCNAction.fadeOpacity(to: 0.4, duration: 0.5)
                 
                 let hold = SCNAction.wait(duration: 5.0)//Double(desiredPoints) * 0.01 * 3)
                 

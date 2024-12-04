@@ -29,10 +29,10 @@ struct ControlView : View {
             Slider(value: $t, in: 0...10, step: 0.1)
             
             Text("Z: \(z)")
-            Slider(value: $z, in: 5...50, step: 0.1)
+            Slider(value: $z, in: 0...50, step: 1)
             
-            Text("Accuracy: \(points)")
-            Slider(value: $points, in: 100...5000, step: 100)
+            Text("Accuracy: \(Int(points))")
+            Slider(value: $points, in: 1000...50000, step: 1000)
         }
     }
 }
