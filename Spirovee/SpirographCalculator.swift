@@ -37,7 +37,7 @@ class SpirographCalculator {
         }
         
         
-        return points
+        return Array(points.prefix(num_points))
     }
     
 }

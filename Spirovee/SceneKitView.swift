@@ -4,6 +4,7 @@
 //
 //  Created by Tom Marsh on 12/3/24.
 //
+
 import SceneKit
 import SwiftUI
 
@@ -11,6 +12,12 @@ struct SceneKitView: UIViewRepresentable {
     @Binding var R: Double
     @Binding var r: Double
     @Binding var d: Double
+    
+    private let desiredPoints = 5000 // Number of spheres to use
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator()
+    }
     
     func makeUIView(context: Context) -> SCNView {
         let sceneView = SCNView()
@@ -21,46 +28,53 @@ struct SceneKitView: UIViewRepresentable {
         let scene = SCNScene()
         sceneView.scene = scene
         
-        // Initial spirograph
-        updateSpirograph(in: scene)
+        // Camera setup
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 100) // Move the camera back
+        cameraNode.look(at: SCNVector3(0, 0, 0)) // Focus on the origin
+        scene.rootNode.addChildNode(cameraNode)
         
+        // Create initial spheres
+        createInitialSpheres(parentNode: scene.rootNode, pointCount: desiredPoints, context: context)
         return sceneView
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {
-        guard let scene = uiView.scene else { return }
-        updateSpirograph(in: scene)
+        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d))
+        updateSpherePositions(with: points, context: context)
     }
     
-    private func updateSpirograph(in scene: SCNScene) {
-        // Remove existing spirograph nodes
-        scene.rootNode.childNodes.forEach { $0.removeFromParentNode() }
-        
-        // Add updated spirograph
-        let spirographNode = createSpirographNode(R: Int(R), r: Int(r), d: Int(d))
-        scene.rootNode.addChildNode(spirographNode)
-    }
-    
-    func createSpirographNode(R: Int, r: Int, d: Int) -> SCNNode {
-        // Use SpirographCalculator to compute points
-        let points = SpirographCalculator.calculatePoints(R: R, r: r, d: d)
-        
-        print("Generated Points: \(points.count)") // Debugging
-        
-        // Create a parent node to hold all spheres
-        let spirographNode = SCNNode()
-        
-        // Add a small sphere at each point
-        for point in points {
-            let sphereGeometry = SCNSphere(radius: 1.0) // Small sphere
-            sphereGeometry.segmentCount = 8
-            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red // Make them visible
+    private func createInitialSpheres(parentNode: SCNNode, pointCount: Int, context: Context) {
+        for _ in 0..<pointCount {
+            let sphereGeometry = SCNSphere(radius: 0.5)
+            sphereGeometry.segmentCount = 8 // Low detail for performance
+            sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red
             
             let sphereNode = SCNNode(geometry: sphereGeometry)
-            sphereNode.position = SCNVector3(point.x, point.y, 0) // Place sphere at calculated point
-            spirographNode.addChildNode(sphereNode)
+            sphereNode.position = SCNVector3(0, 0, 0)
+            context.coordinator.sphereNodes.append(sphereNode)
+            parentNode.addChildNode(sphereNode)
+        }
+    }
+    
+    private func updateSpherePositions(with points: [SpirographPoint], context: Context) {
+        guard points.count == context.coordinator.sphereNodes.count else {
+            print("Mismatch: \(points.count) points, \(context.coordinator.sphereNodes.count) spheres")
+            return
         }
         
-        return spirographNode
+        for (index, point) in points.enumerated() {
+            let sphereNode = context.coordinator.sphereNodes[index]
+            
+            // Animate the position change for smooth movement
+            let newPosition = SCNVector3(point.x, point.y, 0)
+            let moveAction = SCNAction.move(to: newPosition, duration: 0.2)
+            sphereNode.runAction(moveAction)
+        }
     }
+}
+
+class Coordinator {
+    var sphereNodes: [SCNNode] = []
 }
