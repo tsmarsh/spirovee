@@ -19,7 +19,7 @@ struct ContentView: View {
                         Spacer() // Push content to the top
                     }
                     
-                    SceneKitView(R: $R, r: $r, d: $d)
+                    SpiroveeScene(R: $R, r: $r, d: $d)
                         .aspectRatio(1, contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .border(Color.gray, width: 1)
@@ -27,7 +27,7 @@ struct ContentView: View {
             } else {
                 // Portrait: Controls at the bottom
                 VStack {
-                    SceneKitView(R: $R, r: $r, d: $d)
+                    SpiroveeScene(R: $R, r: $r, d: $d)
                         .aspectRatio(1, contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.8)
                         .border(Color.gray, width: 1)

@@ -8,7 +8,7 @@
 import SceneKit
 import SwiftUI
 
-struct SceneKitView: UIViewRepresentable {
+struct SpiroveeScene: UIViewRepresentable {
     @Binding var R: Double
     @Binding var r: Double
     @Binding var d: Double
