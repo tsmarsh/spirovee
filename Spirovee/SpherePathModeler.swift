@@ -7,9 +7,9 @@
 import SceneKit
 
 struct SpherePathModeler: PathModeler {
-    func create(parentNode: SCNNode, pointCount: Int, coordinator : Coordinator) {
+    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator : Coordinator) {
         for _ in 0..<pointCount {
-            let sphereGeometry = SCNSphere(radius: 0.5)
+            let sphereGeometry = SCNSphere(radius: thickness)
             sphereGeometry.segmentCount = 8
             sphereGeometry.firstMaterial?.diffuse.contents = UIColor.lightGray
             sphereGeometry.firstMaterial?.emission.contents = UIColor.blue // Add emissive effect
@@ -21,19 +21,28 @@ struct SpherePathModeler: PathModeler {
         }
     }
     
-    func update(with points: [SpirographPoint], isDChanged: Bool, coordinator: Coordinator) {
+    func update(with points: [SpirographPoint], isDChanged: Bool, thickness: Double, coordinator: Coordinator) {
         guard points.count == coordinator.nodes.count else {
             print("Mismatch: \(points.count) points, \(coordinator.nodes.count) spheres")
             return
         }
         
+        
         if (isDChanged){
             for (index, sphereNode) in coordinator.nodes.enumerated() {
+                if let sphereGeometry = sphereNode.geometry as? SCNSphere {
+                    sphereGeometry.radius = thickness
+                }
+                
                 let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.2) // Move to final position
                 sphereNode.runAction(moveToFinal)
             }
         } else {
             for (index, sphereNode) in coordinator.nodes.enumerated() {
+                if let sphereGeometry = sphereNode.geometry as? SCNSphere {
+                    sphereGeometry.radius = thickness
+                }
+                
                 let reset = SCNAction.run { _ in
                     sphereNode.position = SCNVector3(0, 0, 0)
                     sphereNode.opacity = 0.0

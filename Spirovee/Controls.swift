@@ -10,6 +10,7 @@ struct ControlView : View {
     @Binding var R: Double // Fixed circle radius
     @Binding var r: Double // Moving circle radius
     @Binding var d: Double // Distance from center
+    @Binding var t: Double
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -24,6 +25,10 @@ struct ControlView : View {
             // Slider for d
             Text("Distance (d): \(Int(d))")
             Slider(value: $d, in: 1...100, step: 1)
+            
+            // Slider for d
+            Text("Thickness (t): \t)")
+            Slider(value: $t, in: 0...10, step: 0.1)
         }
     }
 }

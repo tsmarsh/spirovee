@@ -1,10 +1,12 @@
 import SceneKit
+import SwiftUI
 
 struct CylinderPathModeler: PathModeler {
-    func create(parentNode: SCNNode, pointCount: Int, coordinator: Coordinator) {
+    
+    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator: Coordinator) {
         // Generate a spirograph path for initial creation
         let points = generateDummyPath(pointCount: pointCount)
-        let geometry = createCylinderAlongPath(points: points)
+        let geometry = createCylinderAlongPath(points: points, thickness: Float(thickness))
         
         // Create a node with the generated geometry and add it to the parent
         let cylinderNode = SCNNode(geometry: geometry)
@@ -12,22 +14,22 @@ struct CylinderPathModeler: PathModeler {
         coordinator.nodes = [cylinderNode] // Store the cylinder node in the coordinator
     }
     
-    func update(with points: [SpirographPoint], isDChanged: Bool, coordinator: Coordinator) {
+    func update(with points: [SpirographPoint], isDChanged: Bool,thickness: Double, coordinator: Coordinator) {
         guard let cylinderNode = coordinator.nodes.first else { return }
         
         // Update the geometry with new points
-        let geometry = createCylinderAlongPath(points: points)
+        let geometry = createCylinderAlongPath(points: points, thickness: Float(thickness))
         cylinderNode.geometry = geometry
     }
     
     // Helper to create a smooth cylinder geometry along a path
-    private func createCylinderAlongPath(points: [SpirographPoint]) -> SCNGeometry {
+    private func createCylinderAlongPath(points: [SpirographPoint], thickness: Float) -> SCNGeometry {
         guard points.count > 1 else { return SCNGeometry() }
         
         var vertices: [SCNVector3] = []
         var indices: [UInt32] = []
         
-        let radius: Float = 0.2 // Radius of the cylinder
+        let radius: Float = thickness // Radius of the cylinder
         let circleSegments = 16 // Smoothness of the cross-section
         
         // Create circular profile

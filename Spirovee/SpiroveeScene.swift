@@ -12,10 +12,11 @@ struct SpiroveeScene: UIViewRepresentable {
     @Binding var R: Double
     @Binding var r: Double
     @Binding var d: Double
+    @Binding var t: Double
     
-    var modeller: PathModeler = CylinderPathModeler()
+    var modeller: PathModeler = SpherePathModeler()
     
-    private let desiredPoints = 5000 // Number of spheres to use
+    private let desiredPoints = 10000 // Number of spheres to use
 
     func makeCoordinator() -> Coordinator {
         return Coordinator()
@@ -41,7 +42,7 @@ struct SpiroveeScene: UIViewRepresentable {
         scene.rootNode.addChildNode(cameraNode)
         
         // Create initial spheres
-        modeller.create(parentNode: scene.rootNode, pointCount: desiredPoints, coordinator: context.coordinator)
+        modeller.create(parentNode: scene.rootNode, pointCount: desiredPoints, thickness: t, coordinator: context.coordinator)
         return sceneView
     }
     
@@ -52,13 +53,13 @@ struct SpiroveeScene: UIViewRepresentable {
         
         context.coordinator.lastD = d // Update the last value of d
         
-        modeller.update(with: points, isDChanged: isDChanged, coordinator: context.coordinator)
+        modeller.update(with: points, isDChanged: isDChanged, thickness: t, coordinator: context.coordinator)
     }
 }
 
 protocol PathModeler {
-    func create(parentNode: SCNNode, pointCount: Int, coordinator: Coordinator)
-    func update(with points: [SpirographPoint], isDChanged: Bool, coordinator: Coordinator)
+    func create(parentNode: SCNNode, pointCount: Int, thickness: Double, coordinator: Coordinator)
+    func update(with points: [SpirographPoint], isDChanged: Bool, thickness: Double, coordinator: Coordinator)
 }
 
 class Coordinator {
