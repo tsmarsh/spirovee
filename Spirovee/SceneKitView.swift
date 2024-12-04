@@ -75,7 +75,7 @@ struct SceneKitView: UIViewRepresentable {
         
         if (isDChanged){
             for (index, sphereNode) in context.coordinator.sphereNodes.enumerated() {
-                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y, 0), duration: 0.2) // Move to final position
+                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.2) // Move to final position
                 sphereNode.runAction(moveToFinal)
             }
         } else {
@@ -104,7 +104,7 @@ struct SceneKitView: UIViewRepresentable {
                 let loop = SCNAction.repeatForever(sequence)
                 
                 // Run the animation
-                sphereNode.runAction(SCNAction.sequence([reset, loop]))
+                sphereNode.runAction(SCNAction.sequence([reset, sequence]))
             }
         }
 
