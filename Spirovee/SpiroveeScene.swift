@@ -13,7 +13,7 @@ struct SpiroveeScene: UIViewRepresentable {
     @Binding var r: Double
     @Binding var d: Double
     
-    var modeller: PathModeler = SpherePathModeler()
+    var modeller: PathModeler = CylinderPathModeler()
     
     private let desiredPoints = 5000 // Number of spheres to use
 
@@ -62,6 +62,6 @@ protocol PathModeler {
 }
 
 class Coordinator {
-    var sphereNodes: [SCNNode] = []
+    var nodes: [SCNNode] = []
     var lastD: Double?
 }

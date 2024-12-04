@@ -16,24 +16,24 @@ struct SpherePathModeler: PathModeler {
 
             let sphereNode = SCNNode(geometry: sphereGeometry)
             sphereNode.position = SCNVector3(0, 0, 0)
-            coordinator.sphereNodes.append(sphereNode)
+            coordinator.nodes.append(sphereNode)
             parentNode.addChildNode(sphereNode)
         }
     }
     
     func update(with points: [SpirographPoint], isDChanged: Bool, coordinator: Coordinator) {
-        guard points.count == coordinator.sphereNodes.count else {
-            print("Mismatch: \(points.count) points, \(coordinator.sphereNodes.count) spheres")
+        guard points.count == coordinator.nodes.count else {
+            print("Mismatch: \(points.count) points, \(coordinator.nodes.count) spheres")
             return
         }
         
         if (isDChanged){
-            for (index, sphereNode) in coordinator.sphereNodes.enumerated() {
+            for (index, sphereNode) in coordinator.nodes.enumerated() {
                 let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.2) // Move to final position
                 sphereNode.runAction(moveToFinal)
             }
         } else {
-            for (index, sphereNode) in coordinator.sphereNodes.enumerated() {
+            for (index, sphereNode) in coordinator.nodes.enumerated() {
                 let reset = SCNAction.run { _ in
                     sphereNode.position = SCNVector3(0, 0, 0)
                     sphereNode.opacity = 0.0
@@ -55,7 +55,7 @@ struct SpherePathModeler: PathModeler {
                 let hold = SCNAction.wait(duration: 5.0)//Double(desiredPoints) * 0.01 * 3)
                 
                 let sequence = SCNAction.sequence([makeInvisible, moveToFinal, wait, fadeIn, hold])
-                let loop = SCNAction.repeatForever(sequence)
+                // let loop = SCNAction.repeatForever(sequence)
                 
                 // Run the animation
                 sphereNode.runAction(SCNAction.sequence([reset, sequence]))
