@@ -33,6 +33,9 @@ struct SceneKitView: UIViewRepresentable {
         cameraNode.camera = SCNCamera()
         cameraNode.position = SCNVector3(0, 0, 100) // Move the camera back
         cameraNode.look(at: SCNVector3(0, 0, 0)) // Focus on the origin
+        cameraNode.camera?.zNear = 0.1
+        cameraNode.camera?.zFar = 5000
+        
         scene.rootNode.addChildNode(cameraNode)
         
         // Create initial spheres
@@ -48,9 +51,10 @@ struct SceneKitView: UIViewRepresentable {
     private func createInitialSpheres(parentNode: SCNNode, pointCount: Int, context: Context) {
         for _ in 0..<pointCount {
             let sphereGeometry = SCNSphere(radius: 0.5)
-            sphereGeometry.segmentCount = 8 // Low detail for performance
+            sphereGeometry.segmentCount = 8
             sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red
-            
+            sphereGeometry.firstMaterial?.emission.contents = UIColor.red // Add emissive effect
+
             let sphereNode = SCNNode(geometry: sphereGeometry)
             sphereNode.position = SCNVector3(0, 0, 0)
             context.coordinator.sphereNodes.append(sphereNode)

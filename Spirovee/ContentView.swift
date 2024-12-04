@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var R: Double = 100.0  // Fixed circle radius
-    @State private var r: Double = 40.0   // Moving circle radius
-    @State private var d: Double = 50.0   // Distance from center
+    @State private var R: Double = 30  // Fixed circle radius
+    @State private var r: Double = 10.0   // Moving circle radius
+    @State private var d: Double = 5.0   // Distance from center
     
     var body: some View {
         VStack {

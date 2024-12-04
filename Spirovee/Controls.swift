@@ -15,15 +15,15 @@ struct ControlView : View {
         VStack(alignment: .leading, spacing: 10) {
             // Slider for R
             Text("Fixed Circle (R): \(Int(R))")
-            Slider(value: $R, in: 50...150, step: 1)
+            Slider(value: $R, in: 5...50, step: 1)
             
             // Slider for r
             Text("Moving Circle (r): \(Int(r))")
-            Slider(value: $r, in: 10...80, step: 1)
+            Slider(value: $r, in: 5...50, step: 1)
             
             // Slider for d
             Text("Distance (d): \(Int(d))")
-            Slider(value: $d, in: 10...100, step: 1)
+            Slider(value: $d, in: 1...100, step: 1)
         }
     }
 }
