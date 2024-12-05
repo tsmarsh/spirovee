@@ -5,6 +5,7 @@
 //  Created by Tom Marsh on 12/4/24.
 //
 import SceneKit
+import SpiroCalc
 
 struct SpherePathModeler: PathModeler {
     private func createSphere(coordinator : Coordinator) {

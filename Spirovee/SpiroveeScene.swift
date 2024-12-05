@@ -7,6 +7,7 @@
 
 import SceneKit
 import SwiftUI
+import SpiroCalc
 
 struct SpiroveeScene: UIViewRepresentable {
     @Binding var R: Double
@@ -54,7 +55,7 @@ struct SpiroveeScene: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let points = SpirographCalculator.calculatePoints(R: Int(R), r: Int(r), d: Int(d), zz: Int(z), num_points: Int(desiredPoints))
+        let points = calculatePoints(R: Int(R), r: Int(r), d: Int(d), zz: Int(z), num_points: Int(desiredPoints))
         
         modeller.update(with: points, scene: self, coordinator: context.coordinator)
         

@@ -28,7 +28,8 @@ struct ContentView: View {
                             Spacer()
                         }
                         .frame(maxWidth: geometry.size.width * 0.3)
-
+                    
+                    
                         SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $r, desiredPoints: $num_points)
                             .aspectRatio(1, contentMode: .fit)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -1,5 +1,6 @@
 import SceneKit
 import SwiftUI
+import SpiroCalc
 
 struct CylinderPathModeler: PathModeler {
     
