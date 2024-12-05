@@ -1,4 +1,5 @@
 import SwiftUI
+import SpiroControls
 
 struct ContentView: View {
     @State private var R: Double = 30
@@ -13,7 +14,7 @@ struct ContentView: View {
             VStack(spacing: 16) {
                 if geometry.size.width > geometry.size.height {
                     // Landscape Layout
-                    HStack(spacing: 16) {
+                    HStack(spacing: 16) { 
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Spirograph Settings")
                                 .font(.headline)
