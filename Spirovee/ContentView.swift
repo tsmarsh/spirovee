@@ -41,7 +41,7 @@ struct ContentView: View {
                 } else {
                     // Portrait Layout
                     VStack(spacing: 16) {
-                        SpiroveeKit(
+                        SpiroveeScene(
                             R: $R,
                             r: $r,
                             d: $d,

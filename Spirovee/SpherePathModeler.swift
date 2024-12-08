@@ -46,47 +46,14 @@ struct SpherePathModeler: PathModeler {
             coordinator.nodes.removeLast(currentNodeCount - targetNodeCount)
         }
         
-        if (scene.d != coordinator.lastD || scene.z != coordinator.lastZ || scene.t != coordinator.lastThickness){
-            for (index, sphereNode) in coordinator.nodes.enumerated() {
-                if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                    sphereGeometry.radius = scene.t
-                }
-                
-                let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.2) // Move to final position
-                sphereNode.runAction(moveToFinal)
+        for (index, sphereNode) in coordinator.nodes.enumerated() {
+            if let sphereGeometry = sphereNode.geometry as? SCNSphere {
+                sphereGeometry.radius = scene.t
             }
-        } else {
-            for (index, sphereNode) in coordinator.nodes.enumerated() {
-                if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                    sphereGeometry.radius = scene.t
-                }
-                
-                let reset = SCNAction.run { _ in
-                    sphereNode.position = SCNVector3(0, 0, 0)
-                    sphereNode.opacity = 0.0
-                }
-                
-                let point = points[index]
-
-                // Animation sequence
-                let delay = Double(index) * (2.0 / Double(points.count)) // Incremental delay for drawing effect
-
-                let makeInvisible = SCNAction.fadeOut(duration: 0.05)
-                
-                let moveToFinal = SCNAction.move(to: SCNVector3(point.x, point.y, point.z), duration: 0.0)
-                
-                let wait = SCNAction.wait(duration: delay)
-                
-                let fadeIn = SCNAction.fadeOpacity(to: 0.4, duration: 0.5)
-                
-                let hold = SCNAction.wait(duration: 5.0)//Double(desiredPoints) * 0.01 * 3)
-                
-                let sequence = SCNAction.sequence([makeInvisible, moveToFinal, wait, fadeIn, hold])
-                // let loop = SCNAction.repeatForever(sequence)
-                
-                // Run the animation
-                sphereNode.runAction(SCNAction.sequence([reset, sequence]))
-            }
+            
+            let grow = SCNAction.scale(to: scene.t, duration: 0.1)
+            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.1) // Move to final position
+            sphereNode.runAction(SCNAction.sequence([grow, moveToFinal]))
         }
 
     }

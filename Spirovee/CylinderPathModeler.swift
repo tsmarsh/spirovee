@@ -3,96 +3,115 @@ import SwiftUI
 import SpiroCalc
 
 struct CylinderPathModeler: PathModeler {
-    
-    func create(scene: SpiroveeScene, coordinator: Coordinator) {
-        // Generate a spirograph path for initial creation
-        let points = generateDummyPath(pointCount: Int(scene.desiredPoints))
-        let geometry = createCylinderAlongPath(points: points, thickness: Float(scene.t))
+    private func createCylinder(coordinator: Coordinator){
+        let radius = CGFloat(coordinator.lastThickness ?? 0.2)
         
-        // Create a node with the generated geometry and add it to the parent
-        let cylinderNode = SCNNode(geometry: geometry)
-        coordinator.parentNode?.addChildNode(cylinderNode)
-        coordinator.nodes = [cylinderNode] // Store the cylinder node in the coordinator
+        let cylinder = SCNCylinder(radius: radius, height: 0.1)
+        cylinder.firstMaterial?.diffuse.contents = UIColor.lightGray
+        cylinder.firstMaterial?.emission.contents = UIColor.blue
+        
+        let node = SCNNode(geometry: cylinder)
+    
+        node.position = SCNVector3(0, 0, 0)
+        node.opacity = 0.4
+        coordinator.nodes.append(node)
+        coordinator.parentNode?.addChildNode(node)
+    }
+    
+    func create(scene: SpiroveeScene, coordinator : Coordinator) {
+        for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
+            createCylinder(coordinator: coordinator)
+        }
     }
     
     func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
-        guard let cylinderNode = coordinator.nodes.first else { return }
+
+        let currentNodeCount = coordinator.nodes.count
+        let targetNodeCount = points.count
         
-        // Update the geometry with new points
-        let geometry = createCylinderAlongPath(points: points, thickness: Float(scene.t))
-        cylinderNode.geometry = geometry
-    }
-    
-    // Helper to create a smooth cylinder geometry along a path
-    private func createCylinderAlongPath(points: [SpirographPoint], thickness: Float) -> SCNGeometry {
-        guard points.count > 1 else { return SCNGeometry() }
-        
-        var vertices: [SCNVector3] = []
-        var indices: [UInt32] = []
-        
-        let radius: Float = thickness // Radius of the cylinder
-        let circleSegments = 16 // Smoothness of the cross-section
-        
-        // Create circular profile
-        let profile = createCircularProfile(radius: radius, segmentCount: circleSegments)
-        
-        // Generate vertices for the cylinder
-        for (_, pathPoint) in points.enumerated() {
-            for profilePoint in profile {
-                let vertex = SCNVector3(
-                    Float(pathPoint.x) + profilePoint.x,
-                    Float(pathPoint.y) + profilePoint.y,
-                    Float(pathPoint.z) + profilePoint.z
-                )
-                vertices.append(vertex)
+        if currentNodeCount < targetNodeCount {
+            // Add more nodes
+            for _ in currentNodeCount..<targetNodeCount {
+                createCylinder(coordinator: coordinator)
             }
+        } else if currentNodeCount > targetNodeCount {
+            // Remove excess nodes
+            let excessNodes = coordinator.nodes[targetNodeCount..<currentNodeCount]
+            for node in excessNodes {
+                node.removeFromParentNode() // Remove from scene graph
+            }
+            coordinator.nodes.removeLast(currentNodeCount - targetNodeCount)
         }
         
-        // Generate indices for triangle strips
-        for i in 0..<(points.count - 1) {
-            for j in 0..<circleSegments {
-                let current = UInt32(i * circleSegments + j)
-                let next = UInt32((i + 1) * circleSegments + j)
-                let nextLoop = UInt32(i * circleSegments + (j + 1) % circleSegments)
-                let nextLoopNext = UInt32((i + 1) * circleSegments + (j + 1) % circleSegments)
+            for i in 0..<coordinator.nodes.count - 1 {
+                let node = coordinator.nodes[i]
                 
-                indices.append(contentsOf: [current, next, nextLoop])
-                indices.append(contentsOf: [next, nextLoopNext, nextLoop])
+                if let geometry = node.geometry as? SCNCylinder {
+                    let start = points[i]
+                    let end = points[i + 1]
+                    
+                    let startVector = SCNVector3(Float(start.x), Float(start.y), Float(start.z))
+                    let endVector = SCNVector3(Float(end.x), Float(end.y), Float(end.z))
+                    
+                    // Calculate segment vector and length
+                    let segment = endVector - startVector
+                    let length = segment.length()
+                    
+                    geometry.radius = scene.t
+                    geometry.height = CGFloat(length)
+                    
+                    let worldTransform = node.presentation.worldTransform
+                    // Extract the forward vector from the transform’s third column.
+                    // By convention, in SceneKit’s coordinate system, the negative z-axis is the forward direction.
+                    let front = SCNVector3(-worldTransform.m13, -worldTransform.m23, -worldTransform.m33)
+                    
+                    // Normalize the vector to get a unit direction
+                    let clength = sqrtf(front.x*front.x + front.y*front.y + front.z*front.z)
+                    let localFront = SCNVector3(front.x/clength, front.y/clength, front.z/clength)
+                    
+                    let direction = (endVector - startVector).normalized()
+                    let axis = localFront.cross(direction)
+                    let dot = localFront.dot(direction)
+                    let angle = acosf(max(min(dot, 1.0), -1.0))
+                    
+                    let rotation = SCNVector4(axis.x, axis.y, axis.z, angle)
+                    
+                    let midpoint = (startVector + endVector) * 0.5
+                    let moveToFinal = SCNAction.move(to: midpoint, duration: 0.1)
+                    let rotateToFinal = SCNAction.rotate(toAxisAngle: rotation, duration: 0.1)
+                    let seq = SCNAction.sequence([rotateToFinal, moveToFinal])
+                    
+                    node.runAction(seq)
+                }
             }
-        }
         
-        // Create geometry sources and elements
-        let vertexSource = SCNGeometrySource(vertices: vertices)
-        let indexData = Data(bytes: indices, count: indices.count * MemoryLayout<UInt32>.size)
-        let element = SCNGeometryElement(data: indexData, primitiveType: .triangles, primitiveCount: indices.count / 3, bytesPerIndex: MemoryLayout<UInt32>.size)
-        
-        let geometry = SCNGeometry(sources: [vertexSource], elements: [element])
-        geometry.firstMaterial?.diffuse.contents = UIColor.green
-        geometry.firstMaterial?.isDoubleSided = true
-        return geometry
     }
-    
-    // Helper to create a circular profile for the cylinder's cross-section
-    private func createCircularProfile(radius: Float, segmentCount: Int) -> [SCNVector3] {
-        var profile: [SCNVector3] = []
-        for i in 0..<segmentCount {
-            let angle = (Float(i) / Float(segmentCount)) * 2.0 * .pi
-            let x = radius * cos(angle)
-            let y = radius * sin(angle)
-            profile.append(SCNVector3(x, y, 0))
-        }
-        return profile
+}
+
+// Vector arithmetic helpers
+private extension SCNVector3 {
+    static func +(lhs: SCNVector3, rhs: SCNVector3) -> SCNVector3 {
+        SCNVector3(lhs.x+rhs.x, lhs.y+rhs.y, lhs.z+rhs.z)
     }
-    
-    // Generate a dummy path for testing or initialization
-    private func generateDummyPath(pointCount: Int) -> [SpirographPoint] {
-        var points: [SpirographPoint] = []
-        for i in 0..<pointCount {
-            let theta = Double(i) * 0.1
-            let x = Double(cos(theta) * 10.0)
-            let y = Double(sin(theta) * 10.0)
-            points.append(SpirographPoint(x: x, y: y, z: 0))
-        }
-        return points
+    static func -(lhs: SCNVector3, rhs: SCNVector3) -> SCNVector3 {
+        SCNVector3(lhs.x-rhs.x, lhs.y-rhs.y, lhs.z-rhs.z)
+    }
+    static func *(lhs: SCNVector3, rhs: Float) -> SCNVector3 {
+        SCNVector3(lhs.x*rhs, lhs.y*rhs, lhs.z*rhs)
+    }
+    func length() -> Float {
+        return sqrtf(x*x + y*y + z*z)
+    }
+    func normalized() -> SCNVector3 {
+        let len = length()
+        return SCNVector3(x/len, y/len, z/len)
+    }
+    func dot(_ v: SCNVector3) -> Float {
+        return x*v.x + y*v.y + z*v.z
+    }
+    func cross(_ v: SCNVector3) -> SCNVector3 {
+        return SCNVector3(y*v.z - z*v.y,
+                          z*v.x - x*v.z,
+                          x*v.y - y*v.x)
     }
 }
