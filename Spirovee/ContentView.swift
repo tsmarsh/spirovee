@@ -2,24 +2,21 @@ import SwiftUI
 import SpiroControls
 
 struct ContentView: View {
-    @State private var R: Double = 30
+    @State private var R: Double = 26
     @State private var r: Double = 10.0
     @State private var d: Double = 5.0
     @State private var t: Double = 0.2
     @State private var z: Double = 10
-    @State private var num_points: Double = 10000.0
+    @State private var num_points: Double = 6000.0
 
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 16) {
                 if geometry.size.width > geometry.size.height {
                     // Landscape Layout
-                    HStack(spacing: 16) { 
+                    HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Spirograph Settings")
-                                .font(.headline)
-                                .padding(.bottom, 8)
-
+                            Spacer(minLength: 16)
                             ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))
@@ -31,26 +28,30 @@ struct ContentView: View {
                         .frame(maxWidth: geometry.size.width * 0.3)
                     
                     
-                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $r, desiredPoints: $num_points)
-                            .aspectRatio(1, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color(UIColor.black))
-                            .cornerRadius(12)
+                        SpiroveeScene(
+                            R: $R,
+                            r: $r,
+                            d: $d,
+                            t: $t,
+                            z: $z,
+                            desiredPoints: $num_points
+                        )
+                        .edgesIgnoringSafeArea(.all)
                     }
                 } else {
                     // Portrait Layout
                     VStack(spacing: 16) {
-                        SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $r, desiredPoints: $num_points)
-                            .aspectRatio(1, contentMode: .fit)
-                            .frame(maxWidth: .infinity, maxHeight: geometry.size.height * 0.7)
-                            .background(Color(UIColor.black))
-                            .cornerRadius(12)
+                        SpiroveeKit(
+                            R: $R,
+                            r: $r,
+                            d: $d,
+                            t: $t,
+                            z: $z,
+                            desiredPoints: $num_points
+                        )
+                        .edgesIgnoringSafeArea(.all)
 
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Spirograph Settings")
-                                .font(.headline)
-                                .padding(.bottom, 8)
-
                             ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))

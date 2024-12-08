@@ -12,6 +12,7 @@
 		358516A22D01C07B00ED8D5C /* SpiroControls in Frameworks */ = {isa = PBXBuildFile; productRef = 358516A12D01C07B00ED8D5C /* SpiroControls */; };
 		358516A42D01C08E00ED8D5C /* SpiroControls in Frameworks */ = {isa = PBXBuildFile; productRef = 358516A32D01C08E00ED8D5C /* SpiroControls */; };
 		358516A62D01C0B000ED8D5C /* SpiroControls in Frameworks */ = {isa = PBXBuildFile; productRef = 358516A52D01C0B000ED8D5C /* SpiroControls */; };
+		358516B12D02247700ED8D5C /* SpiroCalc in Frameworks */ = {isa = PBXBuildFile; productRef = 358516B02D02247700ED8D5C /* SpiroCalc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				358516A62D01C0B000ED8D5C /* SpiroControls in Frameworks */,
+				358516B12D02247700ED8D5C /* SpiroCalc in Frameworks */,
 				358516A42D01C08E00ED8D5C /* SpiroControls in Frameworks */,
 				3585167D2D0148EF00ED8D5C /* RealityKitContent in Frameworks */,
 			);
@@ -260,6 +262,7 @@
 				3585167C2D0148EF00ED8D5C /* RealityKitContent */,
 				358516A32D01C08E00ED8D5C /* SpiroControls */,
 				358516A52D01C0B000ED8D5C /* SpiroControls */,
+				358516B02D02247700ED8D5C /* SpiroCalc */,
 			);
 			productName = Spirovison;
 			productReference = 358516782D0148EF00ED8D5C /* Spirovison.app */;
@@ -328,8 +331,8 @@
 			mainGroup = 3575B8392CFF3C4E006D3E7F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				358516712D0146A700ED8D5C /* XCLocalSwiftPackageReference "SpiroCalc" */,
 				358516A02D01C07B00ED8D5C /* XCLocalSwiftPackageReference "SpiroControls" */,
+				358516AF2D02247700ED8D5C /* XCLocalSwiftPackageReference "SpiroCalc" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3575B8432CFF3C4E006D3E7F /* Products */;
@@ -859,13 +862,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		358516712D0146A700ED8D5C /* XCLocalSwiftPackageReference "SpiroCalc" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = SpiroCalc;
-		};
 		358516A02D01C07B00ED8D5C /* XCLocalSwiftPackageReference "SpiroControls" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = SpiroControls;
+		};
+		358516AF2D02247700ED8D5C /* XCLocalSwiftPackageReference "SpiroCalc" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SpiroCalc;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -889,6 +892,10 @@
 		358516A52D01C0B000ED8D5C /* SpiroControls */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SpiroControls;
+		};
+		358516B02D02247700ED8D5C /* SpiroCalc */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpiroCalc;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

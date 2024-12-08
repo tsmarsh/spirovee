@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 13.0, *)
 public struct ControlView : View {
     @Binding public var R: Double // Fixed circle radius
     @Binding public var r: Double // Moving circle radius
@@ -19,23 +20,23 @@ public struct ControlView : View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Fixed Circle (R): \(Int(R))")
+            Text("Fixed Circle:")
             Slider(value: $R, in: 5...50, step: 1)
             
-            Text("Moving Circle (r): \(Int(r))")
+            Text("Moving Circle:")
             Slider(value: $r, in: 5...50, step: 1)
             
-            Text("Distance (d): \(Int(d))")
+            Text("Distance:")
             Slider(value: $d, in: 1...100, step: 1)
             
-            Text("Thickness (t): \(t)")
-            Slider(value: $t, in: 0...10, step: 0.1)
+            Text("Thickness:")
+            Slider(value: $t, in: 0...1, step: 0.01)
 //
 //            Text("Z: \(z)")
 //            Slider(value: $z, in: 0...50, step: 1)
             
-            Text("Accuracy: \(Int(points))")
-            Slider(value: $points, in: 1000...50000, step: 1000)
+            Text("Spheres:")
+            Slider(value: $points, in: 100...10000, step: 100)
         }
     }
 }
