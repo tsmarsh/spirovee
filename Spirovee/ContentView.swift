@@ -2,6 +2,7 @@ import SwiftUI
 import SpiroControls
 
 struct ContentView: View {
+    @State private var showSheet: Bool = false
     @State private var R: Double = 26
     @State private var r: Double = 10.0
     @State private var d: Double = 5.0
@@ -10,63 +11,30 @@ struct ContentView: View {
     @State private var num_points: Double = 6000.0
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 16) {
-                if geometry.size.width > geometry.size.height {
-                    // Landscape Layout
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Spacer(minLength: 16)
-                            ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
-                                .padding()
-                                .background(Color(UIColor.secondarySystemBackground))
-                                .cornerRadius(12)
-                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-
-                            Spacer()
+        ZStack {
+            SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points).edgesIgnoringSafeArea(.all)
+            VStack {
+                HStack {
+                    Button(action: {
+                        withAnimation{
+                            showSheet.toggle()
                         }
-                        .frame(maxWidth: geometry.size.width * 0.3)
-                    
-                    
-                        SpiroveeScene(
-                            R: $R,
-                            r: $r,
-                            d: $d,
-                            t: $t,
-                            z: $z,
-                            desiredPoints: $num_points
-                        )
-                        .edgesIgnoringSafeArea(.all)
+                    }) {
+                        Image(systemName: "slider.horizontal.3")
+                            .padding()
+                            .background(Color(UIColor.secondarySystemBackground))
+                            .cornerRadius(8)
+                            .shadow(radius: 2)
                     }
-                } else {
-                    // Portrait Layout
-                    VStack(spacing: 16) {
-                        SpiroveeScene(
-                            R: $R,
-                            r: $r,
-                            d: $d,
-                            t: $t,
-                            z: $z,
-                            desiredPoints: $num_points
-                        )
-                        .edgesIgnoringSafeArea(.all)
-
-                        VStack(alignment: .leading, spacing: 16) {
-                            ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
-                                .padding()
-                                .background(Color(UIColor.secondarySystemBackground))
-                                .cornerRadius(12)
-                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        }
-                    }
+                    Spacer()
                 }
+                Spacer()
             }
-            .padding(.horizontal, 16)
-            .background(Color(UIColor.black))
+            .padding()
+        }.sheet(isPresented: $showSheet){
+            VStack{
+                ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points).padding()
+            }.presentationDetents([.fraction(0.3), .medium, .large])
         }
     }
-}
-
-#Preview {
-    ContentView()
 }
