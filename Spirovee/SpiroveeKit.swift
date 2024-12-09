@@ -43,7 +43,7 @@ struct SpiroveeKit: UIViewRepresentable {
         var points: [SpirographPoint] = [];
         
         measureExecutionTime(label: "calc") {
-            points = calculatePoints(R: Int(R), r: Int(r), d: Int(d), zz: Int(z), num_points: Int(desiredPoints))
+            points = calculatePoints(R: R, r: r, d: d, zz: z, num_points: Int(desiredPoints))
         }
 
         measureExecutionTime(label: "update") {
