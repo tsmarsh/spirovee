@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "appicon.png",
+      "filename" : "openart-image_LzHAEohK_1733762834080_raw.jpeg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "dark.jpeg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

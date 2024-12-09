@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		356553BB2D077E5200614A18 /* PRIVACY.md in Resources */ = {isa = PBXBuildFile; fileRef = 356553BA2D077E5200614A18 /* PRIVACY.md */; };
 		358516732D0146A700ED8D5C /* SpiroCalc in Frameworks */ = {isa = PBXBuildFile; productRef = 358516722D0146A700ED8D5C /* SpiroCalc */; };
 		3585167D2D0148EF00ED8D5C /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 3585167C2D0148EF00ED8D5C /* RealityKitContent */; };
 		358516A22D01C07B00ED8D5C /* SpiroControls in Frameworks */ = {isa = PBXBuildFile; productRef = 358516A12D01C07B00ED8D5C /* SpiroControls */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		356553BA2D077E5200614A18 /* PRIVACY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PRIVACY.md; sourceTree = "<group>"; };
 		3575B8422CFF3C4E006D3E7F /* Spirovee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spirovee.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3575B8522CFF3C50006D3E7F /* SpiroveeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpiroveeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3575B85C2CFF3C50006D3E7F /* SpiroveeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpiroveeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +140,7 @@
 		3575B8392CFF3C4E006D3E7F = {
 			isa = PBXGroup;
 			children = (
+				356553BA2D077E5200614A18 /* PRIVACY.md */,
 				3585169F2D01C02F00ED8D5C /* SpiroControls */,
 				3575B8442CFF3C4E006D3E7F /* Spirovee */,
 				3575B8552CFF3C50006D3E7F /* SpiroveeTests */,
@@ -353,6 +356,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				356553BB2D077E5200614A18 /* PRIVACY.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,11 +574,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Spirovee/Spirovee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.1;
 				DEVELOPMENT_ASSET_PATHS = "\"Spirovee/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UESJ8ABT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Spirovee;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -592,7 +597,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Debug;
@@ -605,11 +610,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Spirovee/Spirovee.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.1;
 				DEVELOPMENT_ASSET_PATHS = "\"Spirovee/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UESJ8ABT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Spirovee;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -627,7 +633,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Release;
