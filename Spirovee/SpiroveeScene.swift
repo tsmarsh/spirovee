@@ -15,7 +15,8 @@ struct SpiroveeScene: UIViewRepresentable {
     @Binding var d: Double
     @Binding var t: Double
     @Binding var z: Double
-    @Binding var desiredPoints: Double;
+    @Binding var desiredPoints: Double
+    @Binding var play: Bool
     
     var modeller: PathModeler = SpherePathModeler()
     

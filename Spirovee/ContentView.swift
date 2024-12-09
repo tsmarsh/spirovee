@@ -10,6 +10,7 @@ struct ContentView: View {
     @State private var num_points: Double = 10000.0
 
     @State private var showControls = true
+    @State private var play = false
 
     var body: some View {
         GeometryReader { geo in
@@ -17,7 +18,7 @@ struct ContentView: View {
             
             VStack {
                 // Main content
-                SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points)
+                SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points, play: $play)
                     .edgesIgnoringSafeArea(.all)
                 
                 // Control panel overlay
@@ -46,6 +47,17 @@ struct ContentView: View {
                             }
                         }) {
                             Image(systemName: showControls ? "xmark" : "slider.horizontal.3")
+                                .padding()
+                                .background(Color(UIColor.secondarySystemBackground))
+                                .cornerRadius(8)
+                                .shadow(radius: 2)
+                        }
+                        Button(action: {
+                            withAnimation {
+                                play.toggle()
+                            }
+                        }) {
+                            Image(systemName: play ? "stop" : "play")
                                 .padding()
                                 .background(Color(UIColor.secondarySystemBackground))
                                 .cornerRadius(8)

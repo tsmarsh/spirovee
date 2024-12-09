@@ -9,6 +9,7 @@ struct SpiroveeKit: UIViewRepresentable {
     @Binding var t: Double
     @Binding var z: Double
     @Binding var desiredPoints: Double
+
     
     var modeller: KitPathModeler = SphereKitPathModeler()
 
@@ -50,7 +51,6 @@ struct SpiroveeKit: UIViewRepresentable {
             modeller.update(with: points, scene: self, coordinator: context.coordinator)
         }
 
-        
         // Update state in the coordinator
         context.coordinator.lastD = d
         context.coordinator.lastThickness = t

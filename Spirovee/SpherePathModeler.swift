@@ -46,14 +46,31 @@ struct SpherePathModeler: PathModeler {
             coordinator.nodes.removeLast(currentNodeCount - targetNodeCount)
         }
         
+        let playLoop: Double = 3
+        let duration = Double(playLoop / Double(points.count))
+        
         for (index, sphereNode) in coordinator.nodes.enumerated() {
             if let sphereGeometry = sphereNode.geometry as? SCNSphere {
                 sphereGeometry.radius = scene.t
             }
+            sphereNode.removeAllActions()
+            var seq: [SCNAction] = []
             
-            let grow = SCNAction.scale(to: scene.t, duration: 0.3)
-            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.3) // Move to final position
-            sphereNode.runAction(SCNAction.sequence([grow, moveToFinal]))
+            if scene.play  {
+                seq.append(SCNAction.fadeOut(duration: 0.1))
+            } else {
+                seq.append(SCNAction.fadeIn(duration: 0.1))
+            }
+            seq.append(SCNAction.scale(to: scene.t, duration: 0.3))
+            seq.append(SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.3))
+            if scene.play {
+                seq.append(SCNAction.wait(duration: duration * Double(index)))
+                seq.append(SCNAction.fadeIn(duration: 0.2))
+                seq.append(SCNAction.wait(duration: 0.1))
+                sphereNode.runAction(SCNAction.repeatForever(SCNAction.sequence(seq)))
+            } else {
+                sphereNode.runAction(SCNAction.sequence(seq))
+            }
         }
 
     }
