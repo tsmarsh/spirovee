@@ -51,8 +51,8 @@ struct SpherePathModeler: PathModeler {
                 sphereGeometry.radius = scene.t
             }
             
-            let grow = SCNAction.scale(to: scene.t, duration: 0.1)
-            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.1) // Move to final position
+            let grow = SCNAction.scale(to: scene.t, duration: 0.3)
+            let moveToFinal = SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.3) // Move to final position
             sphereNode.runAction(SCNAction.sequence([grow, moveToFinal]))
         }
 
