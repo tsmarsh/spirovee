@@ -99,23 +99,45 @@ public struct MultipleSpirographsView: View {
     @Binding public var spiros: [ViewState]
 
     public var body: some View {
-        List {
-            // Convert spiros into an Array of (index, Binding<ViewState>) pairs
-            ForEach(Array($spiros.enumerated()), id: \.1.id) { (index, $spiro) in
-                Section(header: Text("Spiro #\(index + 1)")) {
-                    ControlView(
-                        R: $spiro.R,
-                        r: $spiro.r,
-                        d: $spiro.d,
-                        t: $spiro.t,
-                        z: $spiro.z,
-                        points: $spiro.num_points
-                    )
+        NavigationStack {
+            List {
+                // Convert spiros into an Array of (index, Binding<ViewState>) pairs
+                ForEach(Array($spiros.enumerated()), id: \.1.id) { (index, $spiro) in
+                    Section(header: Text("Spiro #\(index + 1)")) {
+                        ControlView(
+                            R: $spiro.R,
+                            r: $spiro.r,
+                            d: $spiro.d,
+                            t: $spiro.t,
+                            z: $spiro.z,
+                            points: $spiro.num_points
+                        )
+                    }
+                }
+                // 1) Enable swipe-to-delete
+                .onDelete(perform: deleteSpiro)
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Multiple Spirographs")
+            // 2) Add a toolbar with Edit and Add buttons
+            .toolbar {
+                EditButton()  // Toggles swipe-to-delete mode
+                Button(action: addSpiro) {
+                    Label("Add Spiro", systemImage: "plus")
                 }
             }
         }
-        .listStyle(.insetGrouped)       // or .grouped, .plain, etc.
-        .navigationTitle("Multiple Spirographs")
+    }
+    
+    // MARK: - Actions
+    
+    private func addSpiro() {
+        // Append a new Spiro with default parameters (customize as desired)
+        spiros.append(ViewState())
+    }
+    
+    private func deleteSpiro(at offsets: IndexSet) {
+        spiros.remove(atOffsets: offsets)
     }
 }
 
