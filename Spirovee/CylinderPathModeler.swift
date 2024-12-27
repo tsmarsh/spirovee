@@ -18,13 +18,13 @@ struct CylinderPathModeler: PathModeler {
         coordinator.parentNode?.addChildNode(node)
     }
     
-    func create(scene: SpiroveeScene, coordinator : Coordinator) {
+    func create(scene: any UIViewRepresentable, coordinator : Coordinator) {
         for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
             createCylinder(coordinator: coordinator)
         }
     }
     
-    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
+    func update(with points: [SpirographPoint], current: ViewState, coordinator: Coordinator, play: Bool) {
 
         let currentNodeCount = coordinator.nodes.count
         let targetNodeCount = points.count
@@ -57,7 +57,7 @@ struct CylinderPathModeler: PathModeler {
                     let segment = endVector - startVector
                     let length = segment.length()
                     
-                    geometry.radius = scene.state.t
+                    geometry.radius = current.t
                     geometry.height = CGFloat(length)
                     
                     let worldTransform = node.presentation.worldTransform

@@ -6,6 +6,22 @@
 //
 import SceneKit
 import SpiroCalc
+import SwiftUI
+
+struct MultiSphere: MultiPathModeler {
+    let modeller: PathModeler;
+    
+    func create(scene: any UIViewRepresentable, coordinator: MultiCoordinator) {
+        for subCoordinator in coordinator.coordinators {
+            modeller.create(scene: scene, coordinator: subCoordinator)
+        }
+    }
+    
+    func update(with points: [SpiroCalc.SpirographPoint], current: ViewState, coordinator: Coordinator, play: Bool) {
+        modeller.update(with: points, current: current, coordinator: coordinator, play: play)
+    }
+}
+
 
 struct SpherePathModeler: PathModeler {
     private func createSphere(coordinator : Coordinator) {
@@ -21,14 +37,14 @@ struct SpherePathModeler: PathModeler {
         coordinator.parentNode?.addChildNode(sphereNode)
     }
     
-    func create(scene: SpiroveeScene, coordinator : Coordinator) {
+    func create(scene: any UIViewRepresentable, coordinator : Coordinator) {
         print("Creating")
         for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
             createSphere(coordinator: coordinator)
         }
     }
     
-    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
+    func update(with points: [SpirographPoint], current: ViewState, coordinator: Coordinator, play: Bool) {
         print("Updating")
         
         let currentNodeCount = coordinator.nodes.count
@@ -55,19 +71,19 @@ struct SpherePathModeler: PathModeler {
         
         for (index, sphereNode) in coordinator.nodes.enumerated() {
             if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                sphereGeometry.radius = scene.state.t
+                sphereGeometry.radius = current.t
             }
             sphereNode.removeAllActions()
             var seq: [SCNAction] = []
             
-            if scene.play  {
+            if play  {
                 seq.append(SCNAction.fadeOut(duration: 0.1))
             } else {
                 seq.append(SCNAction.fadeIn(duration: 0.1))
             }
-            seq.append(SCNAction.scale(to: scene.state.t, duration: 0.3))
+            seq.append(SCNAction.scale(to: current.t, duration: 0.3))
             seq.append(SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.3))
-            if scene.play {
+            if play {
                 seq.append(SCNAction.wait(duration: duration * Double(index)))
                 seq.append(SCNAction.fadeIn(duration: 0.2))
                 seq.append(SCNAction.wait(duration: 0.1))

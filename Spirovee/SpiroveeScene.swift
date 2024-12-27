@@ -54,7 +54,7 @@ struct SpiroveeScene: UIViewRepresentable {
     func updateUIView(_ uiView: SCNView, context: Context) {
         let points = calculatePoints(R: state.R, r: state.r, d: state.d, zz: state.z, num_points: Int(state.num_points))
         
-        modeller.update(with: points, scene: self, coordinator: context.coordinator)
+        modeller.update(with: points, current: state, coordinator: context.coordinator, play: play)
         
         context.coordinator.lastD = state.d
         context.coordinator.lastThickness = state.t
@@ -64,8 +64,8 @@ struct SpiroveeScene: UIViewRepresentable {
 }
 
 protocol PathModeler {
-    func create(scene: SpiroveeScene, coordinator: Coordinator)
-    func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator)
+    func create(scene: any UIViewRepresentable, coordinator: Coordinator)
+    func update(with points: [SpirographPoint], current: ViewState, coordinator: Coordinator, play: Bool)
 }
 
 class Coordinator {
