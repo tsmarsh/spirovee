@@ -38,19 +38,15 @@ struct SpherePathModeler: PathModeler {
     }
     
     func create(scene: any UIViewRepresentable, coordinator : Coordinator) {
-        print("Creating")
         for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
             createSphere(coordinator: coordinator)
         }
     }
     
     func update(with points: [SpirographPoint], current: ViewState, coordinator: Coordinator, play: Bool) {
-        print("Updating")
-        
+
         let currentNodeCount = coordinator.nodes.count
         let targetNodeCount = points.count
-        
-        print("Points: \(points.count)")
         
         if currentNodeCount < targetNodeCount {
             // Add more nodes

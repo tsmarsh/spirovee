@@ -27,7 +27,7 @@ struct ContentView: View {
             if isCompactScreen() {
                 // iPhone-like environment: Use a drawer or sheet for controls
                 ZStack {
-                    SpiroveeScene(state: $spiros[0], play: $play)
+                    MultiScene(state: $spiros, play: $play)
                         .edgesIgnoringSafeArea(.all)
 
                     VStack {
@@ -79,7 +79,7 @@ struct ContentView: View {
                     }
                     .padding()
                 } detail: {
-                    SpiroveeScene(state: $spiros[0], play: $play)
+                    MultiScene(state: $spiros, play: $play)
                         .edgesIgnoringSafeArea(.all)
                 }
             }
