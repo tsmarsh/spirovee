@@ -96,20 +96,25 @@ struct ContentView: View {
 }
 
 public struct MultipleSpirographsView: View {
-    @Binding public var spiros: [ViewState];
+    @Binding public var spiros: [ViewState]
 
-    
     public var body: some View {
         List {
-            ForEach($spiros) { $spiro in
-                ControlView(R: $spiro.R,
-                            r: $spiro.r,
-                            d: $spiro.d,
-                            t: $spiro.t,
-                            z: $spiro.z,
-                            points: $spiro.num_points)
+            // Convert spiros into an Array of (index, Binding<ViewState>) pairs
+            ForEach(Array($spiros.enumerated()), id: \.1.id) { (index, $spiro) in
+                Section(header: Text("Spiro #\(index + 1)")) {
+                    ControlView(
+                        R: $spiro.R,
+                        r: $spiro.r,
+                        d: $spiro.d,
+                        t: $spiro.t,
+                        z: $spiro.z,
+                        points: $spiro.num_points
+                    )
+                }
             }
         }
+        .listStyle(.insetGrouped)       // or .grouped, .plain, etc.
         .navigationTitle("Multiple Spirographs")
     }
 }
