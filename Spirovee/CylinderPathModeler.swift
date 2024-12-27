@@ -57,7 +57,7 @@ struct CylinderPathModeler: PathModeler {
                     let segment = endVector - startVector
                     let length = segment.length()
                     
-                    geometry.radius = scene.t
+                    geometry.radius = scene.state.t
                     geometry.height = CGFloat(length)
                     
                     let worldTransform = node.presentation.worldTransform

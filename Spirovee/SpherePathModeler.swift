@@ -22,15 +22,19 @@ struct SpherePathModeler: PathModeler {
     }
     
     func create(scene: SpiroveeScene, coordinator : Coordinator) {
+        print("Creating")
         for _ in 0..<Int(coordinator.lastPoints ?? 10000) {
             createSphere(coordinator: coordinator)
         }
     }
     
     func update(with points: [SpirographPoint], scene: SpiroveeScene, coordinator: Coordinator) {
-
+        print("Updating")
+        
         let currentNodeCount = coordinator.nodes.count
         let targetNodeCount = points.count
+        
+        print("Points: \(points.count)")
         
         if currentNodeCount < targetNodeCount {
             // Add more nodes
@@ -51,7 +55,7 @@ struct SpherePathModeler: PathModeler {
         
         for (index, sphereNode) in coordinator.nodes.enumerated() {
             if let sphereGeometry = sphereNode.geometry as? SCNSphere {
-                sphereGeometry.radius = scene.t
+                sphereGeometry.radius = scene.state.t
             }
             sphereNode.removeAllActions()
             var seq: [SCNAction] = []
@@ -61,7 +65,7 @@ struct SpherePathModeler: PathModeler {
             } else {
                 seq.append(SCNAction.fadeIn(duration: 0.1))
             }
-            seq.append(SCNAction.scale(to: scene.t, duration: 0.3))
+            seq.append(SCNAction.scale(to: scene.state.t, duration: 0.3))
             seq.append(SCNAction.move(to: SCNVector3(points[index].x, points[index].y,points[index].z), duration: 0.3))
             if scene.play {
                 seq.append(SCNAction.wait(duration: duration * Double(index)))

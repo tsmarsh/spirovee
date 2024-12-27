@@ -9,13 +9,9 @@ import SceneKit
 import SwiftUI
 import SpiroCalc
 
+
 struct SpiroveeScene: UIViewRepresentable {
-    @Binding var R: Double
-    @Binding var r: Double
-    @Binding var d: Double
-    @Binding var t: Double
-    @Binding var z: Double
-    @Binding var desiredPoints: Double
+    @Binding var state: ViewState
     @Binding var play: Bool
     
     var modeller: PathModeler = SpherePathModeler()
@@ -44,10 +40,10 @@ struct SpiroveeScene: UIViewRepresentable {
         
         scene.rootNode.addChildNode(cameraNode)
         
-        context.coordinator.lastD = d
-        context.coordinator.lastThickness = t
-        context.coordinator.lastZ = z
-        context.coordinator.lastPoints = desiredPoints
+        context.coordinator.lastD = state.d
+        context.coordinator.lastThickness = state.t
+        context.coordinator.lastZ = state.z
+        context.coordinator.lastPoints = state.num_points
         
         // Create initial spheres
         context.coordinator.parentNode = scene.rootNode
@@ -56,14 +52,14 @@ struct SpiroveeScene: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let points = calculatePoints(R: R, r: r, d: d, zz: z, num_points: Int(desiredPoints))
+        let points = calculatePoints(R: state.R, r: state.r, d: state.d, zz: state.z, num_points: Int(state.num_points))
         
         modeller.update(with: points, scene: self, coordinator: context.coordinator)
         
-        context.coordinator.lastD = d
-        context.coordinator.lastThickness = t
-        context.coordinator.lastZ = z
-        context.coordinator.lastPoints = desiredPoints
+        context.coordinator.lastD = state.d
+        context.coordinator.lastThickness = state.t
+        context.coordinator.lastZ = state.z
+        context.coordinator.lastPoints = state.num_points
     }
 }
 

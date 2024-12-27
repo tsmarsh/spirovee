@@ -1,14 +1,24 @@
 import SwiftUI
 import SpiroControls
 
-struct ContentView: View {
-    @State private var R: Double = 26
-    @State private var r: Double = 10.0
-    @State private var d: Double = 5.0
-    @State private var t: Double = 0.5
-    @State private var z: Double = 10
-    @State private var num_points: Double = 10000.0
+public struct ViewState: Identifiable {
+    public let id: UUID = UUID()
     
+    public var R: Double = 26
+    public var r: Double = 10.0
+    public var d: Double = 5.0
+    public var t: Double = 0.5
+    public var z: Double = 10
+    public var num_points: Double = 10000.0
+}
+
+struct ContentView: View {
+    @State private var spiros: [ViewState] = [
+        // Just give some example defaults
+        .init(R: 10, r: 5, d: 3, t: 0.5, z: 0, num_points: 500),
+        .init(R: 20, r: 10, d: 5, t: 0.2, z: 0, num_points: 1000),
+        .init(R: 15, r: 12, d: 6, t: 0.25, z: 0, num_points: 2500)
+    ]
     @State private var showControls = false
     @State private var play = false
 
@@ -17,7 +27,7 @@ struct ContentView: View {
             if isCompactScreen() {
                 // iPhone-like environment: Use a drawer or sheet for controls
                 ZStack {
-                    SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points, play: $play)
+                    SpiroveeScene(state: $spiros[0], play: $play)
                         .edgesIgnoringSafeArea(.all)
 
                     VStack {
@@ -45,7 +55,7 @@ struct ContentView: View {
                 .sheet(isPresented: $showControls) {
                     VStack {
                         Text("Controls").font(.headline).padding(.bottom, 8)
-                        ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
+                        MultipleSpirographsView(spiros: $spiros)
                             .padding()
                         .padding(.top)
                     }
@@ -56,8 +66,7 @@ struct ContentView: View {
                 NavigationSplitView {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Controls").font(.headline)
-                        ControlView(R: $R, r: $r, d: $d, t: $t, z: $z, points: $num_points)
-
+                        MultipleSpirographsView(spiros: $spiros)
                         Button(action: { play.toggle() }) {
                             Image(systemName: play ? "stop" : "play")
                                 .padding()
@@ -70,7 +79,7 @@ struct ContentView: View {
                     }
                     .padding()
                 } detail: {
-                    SpiroveeScene(R: $R, r: $r, d: $d, t: $t, z: $z, desiredPoints: $num_points, play: $play)
+                    SpiroveeScene(state: $spiros[0], play: $play)
                         .edgesIgnoringSafeArea(.all)
                 }
             }
@@ -85,3 +94,23 @@ struct ContentView: View {
         #endif
     }
 }
+
+public struct MultipleSpirographsView: View {
+    @Binding public var spiros: [ViewState];
+
+    
+    public var body: some View {
+        List {
+            ForEach($spiros) { $spiro in
+                ControlView(R: $spiro.R,
+                            r: $spiro.r,
+                            d: $spiro.d,
+                            t: $spiro.t,
+                            z: $spiro.z,
+                            points: $spiro.num_points)
+            }
+        }
+        .navigationTitle("Multiple Spirographs")
+    }
+}
+

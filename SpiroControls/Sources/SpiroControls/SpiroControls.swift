@@ -31,9 +31,6 @@ public struct ControlView : View {
             
             Text("Thickness:")
             Slider(value: $t, in: 0...1, step: 0.01)
-//
-//            Text("Z: \(z)")
-//            Slider(value: $z, in: 0...50, step: 1)
             
             Text("Spheres:")
             Slider(value: $points, in: 100...10000, step: 100)
